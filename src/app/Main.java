@@ -11,9 +11,11 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
         BankService bankService = new BankServiceImpl();
-        System.out.println("Welcome To Console Bank");
+        System.out.println("Welcome To Easy Bank");
         while (running) {
             System.out.println("""
+                    
+                    Easy Bank :
                         1) Open Account
                         2) Deposit
                         3) Withdraw
@@ -32,9 +34,9 @@ public class Main {
                 case "2" -> deposit(scanner, bankService);
                 case "3" -> withdraw(scanner, bankService);
                 case "4" -> transfer(scanner, bankService);
-                case "5" -> statement(scanner);
+                case "5" -> statement(scanner, bankService);
                 case "6" -> listAccounts(scanner, bankService);
-                case "7" -> searchAccounts(scanner);
+                case "7" -> searchAccounts(scanner, bankService);
                 case "0" -> running = false;
             }
         }
@@ -86,16 +88,29 @@ public class Main {
         bankService.transfer(fromAccount, toAccount, amount, "Transfer");
     }
 
-    private static void statement(Scanner sc) {
+    private static void statement(Scanner scanner, BankService bankService) {
+        System.out.println("Account number: ");
+        String account = scanner.nextLine().trim();
+        System.out.println("Account Statement : ");
+        bankService.getStatement(account).forEach(t -> {
+            System.out.println(t.getTimeStamp() + " | " + t.getType() + " | " + t.getAmount() + " | " + t.getNote());
+        });
     }
 
-    private static void listAccounts(Scanner sc, BankService bankService) {
+    private static void listAccounts(Scanner scanner, BankService bankService) {
+        System.out.println("List Accounts : ");
         bankService.listAccount().forEach(account -> {
             System.out.println(account.getAccountNumber() + " | " + account.getAccountType() + " | " + account.getBalance());
         });
     }
 
-    private static void searchAccounts(Scanner sc) {
+    private static void searchAccounts(Scanner scanner,  BankService bankService) {
+        System.out.println("Customer name contains: ");
+        String name = scanner.nextLine().trim();
+        bankService.searchAccountsByCustomerName(name).forEach(account ->
+                System.out.println(account.getAccountNumber() + " | " + account.getAccountType() + " | " + account.getBalance())
+        );
+
     }
 
 
